@@ -1,0 +1,101 @@
+pipeline {
+  agent {
+    kubernetes {
+      cloud 'vmware-k8s'
+      inheritFrom ' '
+      namespace 'ci-cd'
+      yaml '''apiVersion: v1
+kind: Pod
+spec:
+  containers:
+    - image: jenkins/inbound-agent
+      name: jnlp
+      imagePullPolicy: IfNotPresent
+      args: ['$(JENKINS_SECRET)','$(JENKINS_NAME)']
+      tty: true
+      volumeMounts:
+        - name: hosts
+          mountPath: /etc/hosts
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+        - name: gitee-key
+          mountPath: /home/jenkins/.ssh
+  volumes:
+    - name: hosts
+      hostPath:
+        path: /etc/hosts
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock
+    - name: gitee-key
+      secret:
+        secretName: gitee-key'''
+    }
+  }
+  
+  triggers {
+    GenericTrigger(causeString: 'Generic Cause', genericVariables: [[defaultValue: '', key: 'ref', regexpFilter: '', value: '$.ref']], regexpFilterExpression: '^(refs/origin/master)$', regexpFilterText: '$ref', token: '123.com')
+  }
+
+  parameters {
+    hidden defaultValue: 'cddfcf89-e846-4c13-b21a-a6d0838dd484', description: '拉取代码仓库ssh key', name: 'GITEE_KEY'
+    hidden defaultValue: 'git@gitee.com:hanlei153/hello-world-spring-boot.git', description: '代码仓库地址', name: 'Git_Url'
+    
+  }
+  stages {
+    stage('Echo ENV') {
+      steps {
+        sh 'printenv'
+      }
+    }
+    
+    stage('Git Pull') {
+      steps {
+        git(url: '${Git_Url}', credentialsId: '${GITEE_KEY}', branch: '${BRANCH_NAME}')
+      }
+    }
+
+    stage('Build Code') {
+      steps {
+        sh 'echo "build Code"'
+      }
+    }
+
+    stage('Build Image') {
+      steps {
+        sh 'echo "Build image"'
+      }
+    }
+
+    stage('Deploy jenkinsfile分支') {
+      when {
+        branch 'jenkinsfile'
+      }
+      steps {
+        input message: '是否继续部署 (点击 "Proceed" 继续)'
+        sh 'echo "deploy jenkinsfile分支"'
+      }
+    }
+
+    stage('Deploy dev分支') {
+      when {
+        branch 'dev'
+      }
+      steps {
+        input message: '是否继续部署 (点击 "Proceed" 继续)'
+        sh 'echo "deploy dev分支"'
+      }
+    }
+
+    stage('Deploy master分支') {
+      when {
+        branch 'master'
+      }
+      steps {
+        input message: '是否继续部署 (点击 "Proceed" 继续)'
+        sh 'echo "deploy master分支"'
+      }
+    }
+
+  }
+}
