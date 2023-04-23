@@ -67,16 +67,6 @@ spec:
       }
     }
 
-    stage('Deploy jenkinsfile分支') {
-      when {
-        branch 'jenkinsfile'
-      }
-      steps {
-        input message: '是否继续部署 (点击 "Proceed" 继续)'
-        sh 'echo "deploy jenkinsfile分支"'
-      }
-    }
-
     stage('Deploy dev分支') {
       when {
         branch 'dev'
