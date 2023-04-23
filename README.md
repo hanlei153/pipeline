@@ -5,4 +5,4 @@
 ### 按你需求更换构建容器，或者将构建工具集成在slave容器内
 ### 将此jenkinsfile放在需要构建的分支中
 ### 在gitlab中配置webhook地址，token在jenkinsfile中默认是123.com，如果需要更改请将jenkinsfile中的token改为你需要的token值
-  http://jenkins_url:port/generic-webhook-trigger/invoke?token=123.com
+    http://jenkins_url:port/generic-webhook-trigger/invoke?token=123.com
