@@ -38,8 +38,8 @@ spec:
   }
 
   parameters {
-    hidden defaultValue: 'cddfcf89-e846-4c13-b21a-a6d0838dd484', description: '拉取代码仓库ssh key', name: 'GITEE_KEY'
-    hidden defaultValue: 'git@gitee.com:hanlei153/hello-world-spring-boot.git', description: '代码仓库地址', name: 'Git_Url'
+    hidden defaultValue: '将gitlab ssh key创建一个credentialsId，这里写credentialsId', description: '拉取代码仓库ssh key', name: 'GITEE_KEY'
+    hidden defaultValue: 'gitlab仓库地址', description: '代码仓库地址', name: 'Git_Url'
     
   }
   stages {
